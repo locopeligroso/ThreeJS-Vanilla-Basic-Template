@@ -1,6 +1,9 @@
+import Experience from "../Experience";
+
 export default class Gancio {
-  constructor(){
+  constructor() {
     // Debug
-    this.
+    this.experience = new Experience();
+    this.scene = this.experience.scene;
   }
 }
