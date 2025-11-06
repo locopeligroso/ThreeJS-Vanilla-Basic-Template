@@ -1,5 +1,6 @@
 import Experience from "../Experience";
 import Environment from "./Environment";
+import Wobble from "./Wobble";
 
 export default class World {
   constructor() {
@@ -10,6 +11,11 @@ export default class World {
     this.resources.on("ready", () => {
       // Setup
       this.environment = new Environment();
+
+      this.wobble = new Wobble();
     });
+  }
+  update() {
+    if (this.wobble) this.wobble.update();
   }
 }

@@ -30,7 +30,7 @@ export default class Environment {
     this.hdriMap.texture.mapping = THREE.EquirectangularReflectionMapping;
 
     this.scene.environment = this.hdriMap.texture;
-    // this.scene.background = this.hdriMap.texture;
+    //this.scene.background = this.hdriMap.texture;
 
     this.hdriMap.updateMaterials = () => {
       this.scene.traverse((child) => {
