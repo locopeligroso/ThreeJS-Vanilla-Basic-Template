@@ -4,12 +4,7 @@ import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
 import WobbleMaterial from "../../Materials/WobbleMaterial";
 
 export default class Wobble {
-  constructor({
-    visible = true,
-    debugLabel = "Blob",
-    colorA = "#00e1ff",
-    colorB = "#1f69ff",
-  } = {}) {
+  constructor({ visible = true, debugLabel = "Blob" } = {}) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.time = this.experience.time;
@@ -17,13 +12,13 @@ export default class Wobble {
     this.debugLabel = debugLabel;
 
     this.initMesh(visible);
-    this.initMaterial({ colorA, colorB });
+    this.initMaterial();
     this.scene.add(this.model);
     this.initDebug();
   }
 
   initMesh(visible) {
-    let geometry = new THREE.IcosahedronGeometry(2.5, 50);
+    let geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
     geometry = mergeVertices(geometry);
     geometry.computeVertexNormals();
 
@@ -31,10 +26,11 @@ export default class Wobble {
     this.model.castShadow = true;
     this.model.receiveShadow = true;
     this.model.visible = visible;
+    this.model.rotation.set(-Math.PI * 0.5, 0, 0);
   }
 
-  initMaterial({ colorA, colorB }) {
-    this.wobbleMat = new WobbleMaterial({ colorA, colorB });
+  initMaterial() {
+    this.wobbleMat = new WobbleMaterial();
     this.model.material = this.wobbleMat.material;
     this.model.customDepthMaterial = this.wobbleMat.depthMaterial;
   }

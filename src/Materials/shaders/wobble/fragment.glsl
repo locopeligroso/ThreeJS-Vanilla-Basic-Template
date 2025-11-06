@@ -7,10 +7,4 @@ void main()
 {
     float colorMix = smoothstep(-1.0, 1.0, vWobble);
     csm_DiffuseColor.rgb = mix(uColorA, uColorB, colorMix);
-
-    // // Mirror step
-    csm_Metalness = 1.0;
-    csm_Roughness = 0.1;
-
-    // Shinny tip
 }

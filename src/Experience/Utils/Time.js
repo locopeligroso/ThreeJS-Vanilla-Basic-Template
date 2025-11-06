@@ -1,30 +1,31 @@
-import EventEmitter from './EventEmitter'
+import EventEmitter from "./EventEmitter";
 
 export default class Time extends EventEmitter {
-    constructor() {
-        super()
+  constructor() {
+    super();
 
-        // Setup
-        this.start = Date.now()
-        this.current = this.start
+    this.start = performance.now();
+    this.current = this.start;
+    this.elapsed = 0;
+    this.delta = 16;
 
-        this.elapsed = 0
-        this.delta = 16
+    this.tick = this.tick.bind(this);
+    requestAnimationFrame(this.tick);
+  }
 
-        window.requestAnimationFrame(() => {
-            this.tick()
-        })
-    }
+  tick(now) {
+    // `now` è passato da rAF ed è già basato su performance.now()
+    if (typeof now !== "number") now = performance.now();
 
-    tick() {
-        const currentTime = Date.now()
-        this.delta = currentTime - this.current
-        this.elapsed = this.current - this.start
+    this.delta = now - this.current;
+    // opzionale: clamp per evitare salti enormi quando la tab è sospesa
+    if (this.delta > 100) this.delta = 100;
 
-        this.trigger('tick')
+    this.current = now;
+    this.elapsed = now - this.start;
 
-        window.requestAnimationFrame(() => {
-            this.tick()
-        })
-    }
+    this.trigger("tick", { delta: this.delta, elapsed: this.elapsed });
+
+    requestAnimationFrame(this.tick);
+  }
 }
