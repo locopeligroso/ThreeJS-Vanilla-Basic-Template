@@ -18,7 +18,7 @@ export default class WobbleMaterial {
   setUniforms(colorA, colorB) {
     this.uniforms = {
       uTime: new THREE.Uniform(0),
-      uPositionFrequency: new THREE.Uniform(0.5),
+      uPositionFrequency: new THREE.Uniform(0),
       uTimeFrequency: new THREE.Uniform(0.4),
       uStrength: new THREE.Uniform(0.3),
       uWarpPositionFrequency: new THREE.Uniform(0.38),

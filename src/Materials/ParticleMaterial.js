@@ -20,13 +20,14 @@ export default class ParticleMaterial extends THREE.ShaderMaterial {
 
   setUniforms() {
     this.uniforms = {
-      uSize: { value: 0.4 },
+      uSize: { value: 0.05 },
       uResolution: {
         value: new THREE.Vector2(
           this.sizes.width * this.sizes.pixelRatio,
           this.sizes.height * this.sizes.pixelRatio,
         ),
       },
+      uParticlesTexture: new THREE.Uniform(),
     };
   }
 
@@ -35,7 +36,6 @@ export default class ParticleMaterial extends THREE.ShaderMaterial {
       uniforms: this.uniforms,
       vertexShader,
       fragmentShader,
-      transparent: true,
       depthWrite: false,
     });
   }

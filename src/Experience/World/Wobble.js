@@ -4,7 +4,7 @@ import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
 import WobbleMaterial from "../../Materials/WobbleMaterial";
 
 export default class Wobble {
-  constructor({ visible = true, debugLabel = "Blob" } = {}) {
+  constructor({ visible = false, debugLabel = "Blob" } = {}) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.time = this.experience.time;
@@ -18,7 +18,9 @@ export default class Wobble {
   }
 
   initMesh(visible) {
-    let geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+    //let geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+    //let geometry = new THREE.IcosahedronGeometry(3, 64);
+    let geometry = new THREE.BoxGeometry(3, 3, 3, 512, 512, 512);
     geometry = mergeVertices(geometry);
     geometry.computeVertexNormals();
 
