@@ -1,13 +1,14 @@
+// + aggiungi
 uniform float uTime;
 
 #include ../includes/simplexNoise4d.glsl
 
-void main()
-{
+void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
     vec4 particle = texture(uParticles, uv);
 
-    float time = uTime;
+    float time = uTime * 0.2;
+
     vec3 flowField = vec3(
             simplexNoise4d(vec4(particle.xyz + 0.0, time)),
             simplexNoise4d(vec4(particle.xyz + 1.0, time)),
@@ -19,3 +20,4 @@ void main()
 
     gl_FragColor = particle;
 }
+

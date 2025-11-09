@@ -12,7 +12,7 @@ export default class World {
     this.resources.on("ready", () => {
       // Setup
       this.environment = new Environment();
-      // this.gancio = new GPGPUElement();
+      this.gancio = new GPGPUElement();
       this.wobble = new Wobble();
     });
   }
