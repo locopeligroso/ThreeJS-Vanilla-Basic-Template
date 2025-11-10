@@ -10,4 +10,9 @@ export default [
     type: "gltfModel",
     path: "models/model.glb",
   },
+  {
+    name: "particleMorphing",
+    type: "gltfModel",
+    path: "models/models.glb",
+  },
 ];

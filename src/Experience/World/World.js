@@ -2,6 +2,7 @@ import Experience from "../Experience";
 import Environment from "./Environment";
 import Wobble from "./Wobble";
 import GPGPUElement from "./GPGPUElement";
+import ParticleMorphing from "./Particle-Morphing/ParticleMorphing";
 
 export default class World {
   constructor() {
@@ -12,8 +13,10 @@ export default class World {
     this.resources.on("ready", () => {
       // Setup
       this.environment = new Environment();
-      this.gancio = new GPGPUElement();
-      this.wobble = new Wobble();
+      //      this.gancio = new GPGPUElement();
+      //     this.wobble = new Wobble();
+
+      this.particleMoprhing = new ParticleMorphing();
     });
   }
   update() {
