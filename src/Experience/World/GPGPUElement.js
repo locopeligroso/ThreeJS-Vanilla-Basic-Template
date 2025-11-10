@@ -1,33 +1,34 @@
 import * as THREE from "three";
 import Experience from "../Experience";
-import ParticleMaterial from "../../Materials/ParticleMaterial";
+import ParticleMaterial from "../../Materials/ParticleGPGPUMaterial";
 import { GPUComputationRenderer } from "three/examples/jsm/misc/GPUComputationRenderer.js";
 import gpgpuParticleShader from "../../Materials/shaders/gpgpu/particles.glsl";
 import Time from "../Utils/Time";
 
 export default class GPGPUElement {
-  constructor() {
+  constructor(model) {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
+    this.time = this.experience.time;
+    this.debug = this.experience.debug;
 
-    this.time = new Time();
-
-    this.init();
+    this.init(model);
     this.setParticles();
     this.setGPGPU();
 
-    this.test();
+    // this.test();
+    this.setDebug();
 
     this.setScene(this.particles.points);
     // this.setScene(this.model.scene);
   }
 
-  init() {
+  init(model) {
     this.particles = {};
     this.particles.material = new ParticleMaterial();
 
-    this.model = this.resources.items.boatModel;
+    this.model = model;
 
     this.baseGeometry = {};
     this.baseGeometry.instance = this.model.scene.children[0].geometry;
@@ -52,10 +53,11 @@ export default class GPGPUElement {
     for (let i = 0; i < this.baseGeometry.count; i++) {
       const i3 = i * 3;
       const i4 = i * 4;
+
       image.data[i4 + 0] = position.array[i3 + 0];
       image.data[i4 + 1] = position.array[i3 + 1];
       image.data[i4 + 2] = position.array[i3 + 2];
-      image.data[i4 + 3] = 0;
+      image.data[i4 + 3] = Math.random();
     }
 
     // Geometry
@@ -104,7 +106,13 @@ export default class GPGPUElement {
   }
 
   setUniforms() {
-    this.gpgpu.particlesVariable.material.uniforms.uTime = new THREE.Uniform(0);
+    const uniforms = this.gpgpu.particlesVariable.material.uniforms;
+    uniforms.uTime = new THREE.Uniform(0);
+    uniforms.uDeltaTime = new THREE.Uniform(0);
+    uniforms.uBasePositions = new THREE.Uniform(this.baseParticlesTexture);
+    uniforms.uFlowFieldInfluence = new THREE.Uniform(0.5);
+    uniforms.uFlowFieldStrenght = new THREE.Uniform(2);
+    uniforms.uFlowFieldFrequency = new THREE.Uniform(0.5);
   }
 
   setAttributes() {
@@ -134,8 +142,9 @@ export default class GPGPUElement {
   }
 
   update() {
-    this.gpgpu.particlesVariable.material.uniforms.uTime.value =
-      this.time.elapsed;
+    const uniforms = this.gpgpu.particlesVariable.material.uniforms;
+    uniforms.uTime.value = this.time.elapsed / 1000;
+    uniforms.uDeltaTime.value = this.time.delta / 1000;
 
     this.gpgpu.computation.compute();
 
@@ -157,5 +166,37 @@ export default class GPGPUElement {
 
     test.position.set(3, 0, 0);
     this.setScene(test);
+  }
+
+  setDebug() {
+    const ui = this?.debug?.ui;
+    if (!ui) return;
+
+    const f = (this.debug.particleGPGPUFolder ||=
+      ui.addFolder?.("Particle Material"));
+
+    f.add(
+      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldInfluence,
+      "value",
+      0.0,
+      1.0,
+      0.01,
+    ).name("uFlowFieldInfluence");
+
+    f.add(
+      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldStrenght,
+      "value",
+      0.0,
+      10.0,
+      0.01,
+    ).name("uFlowFieldStrenght");
+
+    f.add(
+      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldFrequency,
+      "value",
+      0.0,
+      10.0,
+      0.01,
+    ).name("uFlowFieldFrequency");
   }
 }

@@ -18,9 +18,10 @@ export default class Wobble {
   }
 
   initMesh(visible) {
-    //let geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
+    let geometry = new THREE.PlaneGeometry(10, 10, 500, 500);
     //let geometry = new THREE.IcosahedronGeometry(3, 64);
-    let geometry = new THREE.BoxGeometry(3, 3, 3, 512, 512, 512);
+    //let geometry = new THREE.BoxGeometry(3, 3, 3, 512, 512, 512);
+
     geometry = mergeVertices(geometry);
     geometry.computeVertexNormals();
 

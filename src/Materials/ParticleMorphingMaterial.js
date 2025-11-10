@@ -19,7 +19,7 @@ export default class ParticleMophingMaterial extends THREE.ShaderMaterial {
 
   setUniforms() {
     this.uniforms = {
-      uSize: { value: 0.2 },
+      uSize: { value: 0.4 },
       uResolution: {
         value: new THREE.Vector2(
           this.sizes.width * this.sizes.pixelRatio,
@@ -27,6 +27,11 @@ export default class ParticleMophingMaterial extends THREE.ShaderMaterial {
         ),
       },
       uProgress: { value: 0 },
+      uFrequency: { value: 0.2 },
+      uDuration: { value: 0.4 },
+
+      uColorA: { value: new THREE.Color(0x00bfff) },
+      uColorB: { value: new THREE.Color(0x001eff) },
     };
   }
 
@@ -41,12 +46,19 @@ export default class ParticleMophingMaterial extends THREE.ShaderMaterial {
   }
 
   setDebug() {
-    console.log("ok");
     const ui = this?.debug?.ui;
     if (!ui) return;
-    const f = ui.addFolder?.("Particle Morphing");
+
+    const f = (this.debug.particleMorphingFolder ||=
+      ui.addFolder?.("Particle Morphing"));
 
     f.add(this.uniforms.uSize, "value", 0.01, 2.0, 0.01).name("uSize");
-    f.add(this.uniforms.uProgress, "value", 0.01, 1.0, 0.01).name("uProgress");
+    f.add(this.uniforms.uProgress, "value", 0.0, 1.0, 0.01).name("uProgress");
+    f.add(this.uniforms.uFrequency, "value", 0.01, 1.0, 0.01).name(
+      "uFrequency",
+    );
+    f.add(this.uniforms.uDuration, "value", 0.01, 1.0, 0.01).name("uDuration");
+    f.addColor(this.uniforms.uColorA, "value");
+    f.addColor(this.uniforms.uColorB, "value");
   }
 }

@@ -11,13 +11,25 @@ export default class World {
     this.resources = this.experience.resources;
 
     this.resources.on("ready", () => {
-      // Setup
-      this.environment = new Environment();
-      //      this.gancio = new GPGPUElement();
-      //     this.wobble = new Wobble();
+      this.init();
 
-      this.particleMoprhing = new ParticleMorphing();
+      this.environment = new Environment();
+      // Setup
+
+      //this.wobble = new Wobble();
+      // this.particleMoprhing = new ParticleMorphing(this.particleMorphingModel);
+      this.gancio = new GPGPUElement(this.gpgpuModel);
     });
+  }
+
+  init() {
+    /*
+     * MODELS
+     */
+
+    this.particleMorphingModel = this.resources.items.ganciParticleMorphing;
+    this.particleMorphingModel = this.resources.items.particleMorphing;
+    this.gpgpuModel = this.resources.items.boatModel;
   }
   update() {
     if (this.wobble) this.wobble.update();

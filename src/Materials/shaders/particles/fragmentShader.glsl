@@ -1,4 +1,5 @@
 varying vec3 vColor;
+uniform float uOpacity;
 
 void main()
 {
@@ -6,7 +7,7 @@ void main()
     if (distanceToCenter > 0.5)
         discard;
 
-    gl_FragColor = vec4(vColor, 1.0);
+    gl_FragColor = vec4(vColor, uOpacity);
 
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
