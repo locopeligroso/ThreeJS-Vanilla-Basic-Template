@@ -30,8 +30,19 @@ export default class GPGPUElement {
 
     this.model = model;
 
+    const originalGeometry = this.model.scene.children[0].geometry;
     this.baseGeometry = {};
-    this.baseGeometry.instance = this.model.scene.children[0].geometry;
+    this.baseGeometry.instance = originalGeometry.clone();
+
+    /*
+    const euler = new THREE.Euler(0, Math.PI * 0.5, 0);
+    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
+    this.baseGeometry.instance.applyMatrix4(matrix);
+    this.baseGeometry.instance.computeBoundingSphere();
+    this.baseGeometry.instance.computeBoundingBox();
+    this.baseGeometry.instance.attributes.position.needsUpdate = true;
+    */
+
     this.baseGeometry.count =
       this.baseGeometry.instance.attributes.position.count;
 
@@ -121,9 +132,18 @@ export default class GPGPUElement {
       new THREE.BufferAttribute(this.particlesUvArray, 2),
     );
 
+    // fallback: se non c'è color nel modello, usa bianco
+    /* const baseColor = this.baseGeometry.instance.attributes.color;
+    const colorAttr = baseColor
+      ? baseColor
+      : new THREE.BufferAttribute(
+          new Float32Array(this.baseGeometry.count * 3).fill(1),
+          3,
+        ); */
+
     this.particles.geometry.setAttribute(
       "aColor",
-      this.baseGeometry.instance.attributes.color,
+      this.baseGeometry.instance.attributes.color_1,
     );
 
     this.particles.geometry.setAttribute(
@@ -143,8 +163,8 @@ export default class GPGPUElement {
 
   update() {
     const uniforms = this.gpgpu.particlesVariable.material.uniforms;
-    uniforms.uTime.value = this.time.elapsed / 1000;
-    uniforms.uDeltaTime.value = this.time.delta / 1000;
+    uniforms.uTime.value = this.time.elapsed / 500;
+    uniforms.uDeltaTime.value = this.time.delta / 500;
 
     this.gpgpu.computation.compute();
 
@@ -198,5 +218,7 @@ export default class GPGPUElement {
       10.0,
       0.01,
     ).name("uFlowFieldFrequency");
+
+    console.log(this.model.scene.children[0].geometry.attributes);
   }
 }

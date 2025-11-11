@@ -9,6 +9,7 @@ import Renderer from "./Renderer";
 import World from "./World/World";
 import Resources from "./Utils/Resources";
 import Debug from "./Utils/Debug.js";
+import Mouse from "./Utils/Mouse.js";
 
 let instance = null;
 
@@ -27,6 +28,7 @@ export default class Experience {
     // Setup
     this.sizes = new Sizes();
     this.time = new Time();
+    // this.mouse = new Mouse();
     this.scene = new THREE.Scene();
     this.resources = new Resources(sources);
     this.camera = new Camera();

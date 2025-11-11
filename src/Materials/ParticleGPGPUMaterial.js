@@ -39,6 +39,7 @@ export default class ParticleGPGPUMaterial extends THREE.ShaderMaterial {
       fragmentShader,
       depthWrite: false,
       blending: THREE.NormalBlending,
+      side: THREE.DoubleSide,
     });
   }
 

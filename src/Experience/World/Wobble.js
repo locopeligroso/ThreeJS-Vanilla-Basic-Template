@@ -4,14 +4,14 @@ import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils";
 import WobbleMaterial from "../../Materials/WobbleMaterial";
 
 export default class Wobble {
-  constructor({ visible = false, debugLabel = "Blob" } = {}) {
+  constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.time = this.experience.time;
     this.debug = this.experience.debug;
-    this.debugLabel = debugLabel;
+    this.debugLabel = "Blob";
 
-    this.initMesh(visible);
+    this.initMesh(true);
     this.initMaterial();
     this.scene.add(this.model);
     this.initDebug();
@@ -29,7 +29,7 @@ export default class Wobble {
     this.model.castShadow = true;
     this.model.receiveShadow = true;
     this.model.visible = visible;
-    this.model.rotation.set(-Math.PI * 0.5, 0, 0);
+    this.model.rotation.set(0, 0, 0);
   }
 
   initMaterial() {

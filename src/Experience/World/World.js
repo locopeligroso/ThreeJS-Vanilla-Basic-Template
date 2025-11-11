@@ -16,9 +16,9 @@ export default class World {
       this.environment = new Environment();
       // Setup
 
-      //this.wobble = new Wobble();
+      this.wobble = new Wobble();
       // this.particleMoprhing = new ParticleMorphing(this.particleMorphingModel);
-      this.gancio = new GPGPUElement(this.gpgpuModel);
+      //this.gancio = new GPGPUElement(this.gpgpuModel);
     });
   }
 
@@ -27,9 +27,8 @@ export default class World {
      * MODELS
      */
 
-    this.particleMorphingModel = this.resources.items.ganciParticleMorphing;
     this.particleMorphingModel = this.resources.items.particleMorphing;
-    this.gpgpuModel = this.resources.items.boatModel;
+    this.gpgpuModel = this.resources.items.gancioGpgpu;
   }
   update() {
     if (this.wobble) this.wobble.update();

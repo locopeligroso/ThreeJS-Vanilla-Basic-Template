@@ -6,26 +6,20 @@ export default [
   },
 
   {
-    name: "suzaneModel",
-    type: "gltfModel",
-    path: "models/suzanne.glb",
-  },
-
-  {
     name: "boatModel",
     type: "gltfModel",
     path: "models/model.glb",
   },
 
   {
-    name: "particleMorphing",
+    name: "gancioGpgpu",
     type: "gltfModel",
-    path: "models/models.glb",
+    path: "models/Gancio1.glb",
   },
 
   {
-    name: "ganciParticleMorphing",
+    name: "particleMorphing",
     type: "gltfModel",
-    path: "models/testGanci.glb",
+    path: "models/models.glb",
   },
 ];
