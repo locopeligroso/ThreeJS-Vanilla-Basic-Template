@@ -6,9 +6,9 @@ export default [
   },
 
   {
-    name: "boatModel",
+    name: "start",
     type: "gltfModel",
-    path: "models/model.glb",
+    path: "models/start.glb",
   },
 
   {
@@ -18,8 +18,14 @@ export default [
   },
 
   {
+    name: "background",
+    type: "gltfModel",
+    path: "models/background.glb",
+  },
+
+  {
     name: "particleMorphing",
     type: "gltfModel",
-    path: "models/models.glb",
+    path: "models/particlesMorphing.glb",
   },
 ];

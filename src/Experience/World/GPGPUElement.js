@@ -6,7 +6,30 @@ import gpgpuParticleShader from "../../Materials/shaders/gpgpu/particles.glsl";
 import Time from "../Utils/Time";
 
 export default class GPGPUElement {
-  constructor(model) {
+  constructor(options = {}) {
+    const {
+      model,
+      pos = [0, -40, 10],
+      rot = [0, 0, 0],
+      uSize = 0.075,
+      uOpacity = 1,
+      uFlowFieldInfluence = 0.5,
+      uFlowFieldStrenght = 2,
+      uFlowFieldFrequency = 0.5,
+      name = "gpgpu element",
+    } = options;
+
+    this.opts = {
+      pos,
+      rot,
+      uSize,
+      uOpacity,
+      uFlowFieldInfluence,
+      uFlowFieldStrenght,
+      uFlowFieldFrequency,
+      name,
+    };
+
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
@@ -21,27 +44,20 @@ export default class GPGPUElement {
     this.setDebug();
 
     this.setScene(this.particles.points);
-    // this.setScene(this.model.scene);
   }
 
   init(model) {
     this.particles = {};
-    this.particles.material = new ParticleMaterial();
+    this.particles.material = new ParticleMaterial(
+      this.opts.uSize,
+      this.opts.uOpacity,
+    );
 
     this.model = model;
 
     const originalGeometry = this.model.scene.children[0].geometry;
     this.baseGeometry = {};
     this.baseGeometry.instance = originalGeometry.clone();
-
-    /*
-    const euler = new THREE.Euler(0, Math.PI * 0.5, 0);
-    const matrix = new THREE.Matrix4().makeRotationFromEuler(euler);
-    this.baseGeometry.instance.applyMatrix4(matrix);
-    this.baseGeometry.instance.computeBoundingSphere();
-    this.baseGeometry.instance.computeBoundingBox();
-    this.baseGeometry.instance.attributes.position.needsUpdate = true;
-    */
 
     this.baseGeometry.count =
       this.baseGeometry.instance.attributes.position.count;
@@ -54,7 +70,22 @@ export default class GPGPUElement {
       this.experience.renderer.instance,
     );
 
+    this.applyGeomTransform();
+
     this.baseParticlesTexture = this.gpgpu.computation.createTexture();
+  }
+
+  applyGeomTransform({ pos = [0, -40, 10], rot = [0, 0, 0] } = {}) {
+    const m = new THREE.Matrix4().compose(
+      new THREE.Vector3(...pos),
+      new THREE.Quaternion().setFromEuler(new THREE.Euler(...rot)),
+      new THREE.Vector3(1, 1, 1),
+    );
+    this.baseGeometry.instance.applyMatrix4(m);
+    this.baseGeometry.instance.attributes.position.needsUpdate = true;
+    this.baseGeometry.instance.computeBoundingSphere();
+    this.baseGeometry.instance.computeBoundingBox?.();
+    this.rotYSpeed = Math.PI * 0.25;
   }
 
   setParticles() {
@@ -121,9 +152,15 @@ export default class GPGPUElement {
     uniforms.uTime = new THREE.Uniform(0);
     uniforms.uDeltaTime = new THREE.Uniform(0);
     uniforms.uBasePositions = new THREE.Uniform(this.baseParticlesTexture);
-    uniforms.uFlowFieldInfluence = new THREE.Uniform(0.5);
-    uniforms.uFlowFieldStrenght = new THREE.Uniform(2);
-    uniforms.uFlowFieldFrequency = new THREE.Uniform(0.5);
+    uniforms.uFlowFieldInfluence = new THREE.Uniform(
+      this.opts.uFlowFieldInfluence,
+    );
+    uniforms.uFlowFieldStrenght = new THREE.Uniform(
+      this.opts.uFlowFieldStrenght,
+    );
+    uniforms.uFlowFieldFrequency = new THREE.Uniform(
+      this.opts.uFlowFieldFrequency,
+    );
   }
 
   setAttributes() {
@@ -132,7 +169,7 @@ export default class GPGPUElement {
       new THREE.BufferAttribute(this.particlesUvArray, 2),
     );
 
-    // fallback: se non c'è color nel modello, usa bianco
+    // fallback
     /* const baseColor = this.baseGeometry.instance.attributes.color;
     const colorAttr = baseColor
       ? baseColor
@@ -143,7 +180,7 @@ export default class GPGPUElement {
 
     this.particles.geometry.setAttribute(
       "aColor",
-      this.baseGeometry.instance.attributes.color_1,
+      this.baseGeometry.instance.attributes.color,
     );
 
     this.particles.geometry.setAttribute(
@@ -155,6 +192,8 @@ export default class GPGPUElement {
       this.particles.geometry,
       this.particles.material,
     );
+
+    this.particles.points.frustumCulled = false;
   }
 
   setScene(object) {
@@ -172,6 +211,9 @@ export default class GPGPUElement {
       this.gpgpu.computation.getCurrentRenderTarget(
         this.gpgpu.particlesVariable,
       ).texture;
+
+    // this.particles.points.rotation.y =
+    //   (this.time.elapsed / 5000) * this.rotYSpeed;
   }
 
   test() {
@@ -193,32 +235,35 @@ export default class GPGPUElement {
     if (!ui) return;
 
     const f = (this.debug.particleGPGPUFolder ||=
-      ui.addFolder?.("Particle Material"));
+      ui.addFolder?.("GPGPU Particles"));
 
-    f.add(
-      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldInfluence,
-      "value",
-      0.0,
-      1.0,
-      0.01,
-    ).name("uFlowFieldInfluence");
+    const folder = f.addFolder(this.opts.name);
 
-    f.add(
-      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldStrenght,
-      "value",
-      0.0,
-      10.0,
-      0.01,
-    ).name("uFlowFieldStrenght");
+    const uniform = this.gpgpu.particlesVariable.material.uniforms;
 
-    f.add(
-      this.gpgpu.particlesVariable.material.uniforms.uFlowFieldFrequency,
-      "value",
-      0.0,
-      10.0,
-      0.01,
-    ).name("uFlowFieldFrequency");
+    folder
+      .add(uniform.uFlowFieldInfluence, "value", 0.0, 1.0, 0.01)
+      .name("uFlowFieldInfluence");
 
+    folder
+      .add(uniform.uFlowFieldStrenght, "value", 0.0, 10.0, 0.01)
+      .name("uFlowFieldStrenght");
+
+    folder
+      .add(uniform.uFlowFieldFrequency, "value", 0.0, 10.0, 0.01)
+      .name("uFlowFieldFrequency");
+
+    folder
+      .add(this.particles.material.uniforms.uSize, "value", 0.01, 0.1, 0.001)
+      .name("uSize");
+
+    folder
+      .add(this.particles.material.uniforms.uOpacity, "value", 0.01, 1, 0.001)
+      .name("uOpacity");
+
+    f.close();
+
+    // console.log
     console.log(this.model.scene.children[0].geometry.attributes);
   }
 }

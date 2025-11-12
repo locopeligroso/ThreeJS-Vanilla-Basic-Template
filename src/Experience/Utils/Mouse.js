@@ -6,12 +6,16 @@ export default class Mouse extends EventEmitter {
     super();
 
     this.experience = new Experience();
-    this.width = this.experience.sizes.width;
-    this.height = this.experience.sizes.height;
+    this.sizes = this.experience.sizes;
 
+    this.init();
     this.setScroll();
+    this.setCursorCoords();
+  }
 
-    console.log(this.width, this.height);
+  init() {
+    window.addEventListener("scroll", () => this.trigger("scroll"));
+    window.addEventListener("mousemove", () => this.trigger("mousemove"));
   }
 
   setResize() {}
@@ -19,9 +23,19 @@ export default class Mouse extends EventEmitter {
   setScroll() {
     this.scrollY;
 
-    window.addEventListener("scroll", () => {
-      this.scrollY = window.scrollY;
-      console.log(this.scrollY);
+    this.on("scroll", () => (this.scrollY = window.scrollY));
+  }
+
+  setCursorCoords() {
+    this.cursor = {};
+    this.cursor.x = 0;
+    this.cursor.y = 0;
+
+    this.on("mousemove", () => {
+      this.cursor.x = event.clientX / this.sizes.width - 0.5;
+      this.cursor.y = event.clientY / this.sizes.height - 0.5;
+
+      //console.log(this.cursor);
     });
   }
 }

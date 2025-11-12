@@ -4,7 +4,7 @@ import vertexShader from "../Materials/shaders/particles/vertexShader.glsl";
 import fragmentShader from "../Materials/shaders/particles/fragmentShader.glsl";
 
 export default class ParticleGPGPUMaterial extends THREE.ShaderMaterial {
-  constructor() {
+  constructor(size, opacity) {
     super();
 
     this.experience = new Experience();
@@ -12,15 +12,15 @@ export default class ParticleGPGPUMaterial extends THREE.ShaderMaterial {
     this.sizes = this.experience.sizes;
     this.debug = this.experience.debug;
 
-    this.setUniforms();
+    this.setUniforms(size, opacity);
     this.setMaterial();
 
     this.setDebug();
   }
 
-  setUniforms() {
+  setUniforms(size, opacity) {
     this.uniforms = {
-      uSize: { value: 0.075 },
+      uSize: { value: size },
       uResolution: {
         value: new THREE.Vector2(
           this.sizes.width * this.sizes.pixelRatio,
@@ -28,7 +28,7 @@ export default class ParticleGPGPUMaterial extends THREE.ShaderMaterial {
         ),
       },
       uParticlesTexture: new THREE.Uniform(),
-      uOpacity: { value: 1 },
+      uOpacity: { value: opacity },
     };
   }
 
@@ -37,34 +37,12 @@ export default class ParticleGPGPUMaterial extends THREE.ShaderMaterial {
       uniforms: this.uniforms,
       vertexShader,
       fragmentShader,
-      depthWrite: false,
       blending: THREE.NormalBlending,
       side: THREE.DoubleSide,
     });
   }
 
-  setDebug() {
-    const ui = this?.debug?.ui;
-    if (!ui) return;
-    const f = (this.debug.particleGPGPUFolder ||=
-      ui.addFolder?.("Particle Material"));
-
-    f.add(this.uniforms.uSize, "value", 0.01, 2.0, 0.01).name("uSize");
-    f.add(this.uniforms.uOpacity, "value", 0.0, 1.0, 0.01).name("uOpacity");
-
-    f.add(this, "blending", {
-      None: THREE.NoBlending,
-      Normal: THREE.NormalBlending,
-      Additive: THREE.AdditiveBlending,
-      Subtractive: THREE.SubtractiveBlending,
-      Multiply: THREE.MultiplyBlending,
-    })
-      .name("Blending")
-      .onChange(() => {
-        this.transparent = this.blending !== THREE.NoBlending;
-        this.needsUpdate = true;
-      });
-  }
+  setDebug() {}
 
   update() {}
 }

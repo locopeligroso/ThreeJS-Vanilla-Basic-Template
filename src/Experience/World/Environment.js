@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
 import Experience from "../Experience";
+import CustomShaderMaterial from "three-custom-shader-material/vanilla";
 
 export default class Environment {
   constructor() {
@@ -8,8 +9,12 @@ export default class Environment {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
 
+    this.debug = this.experience.debug;
+
     this.setSunLight();
     this.setHdriMap();
+
+    this.setDebug();
   }
 
   setSunLight() {
@@ -37,7 +42,9 @@ export default class Environment {
         if (
           child instanceof THREE.Mesh &&
           (child.material instanceof THREE.MeshStandardMaterial ||
-            child.material instanceof THREE.MeshPhysicalMaterial)
+            child.material instanceof THREE.MeshPhysicalMaterial ||
+            child.material instanceof CustomShaderMaterial ||
+            child.material instanceof THREE.ShaderMaterial)
         ) {
           child.material.envMap = this.hdriMap.texture;
           child.material.envMapIntensity = this.hdriMap.intensity;
@@ -46,5 +53,16 @@ export default class Environment {
       });
     };
     this.hdriMap.updateMaterials();
+  }
+
+  setDebug() {
+    const ui = this?.debug?.ui;
+    if (!ui) return;
+
+    ui.add(this.sunLight, "intensity", 0, 5, 0.01).name("Sun intensity");
+
+    ui.add(this.hdriMap, "intensity", 0, 5, 0.01)
+      .name("HDRI intensity")
+      .onChange(() => this.hdriMap.updateMaterials());
   }
 }

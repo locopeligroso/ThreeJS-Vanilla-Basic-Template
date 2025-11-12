@@ -34,6 +34,9 @@ export default class ParticleMorphing {
     );
 
     this.particles.material = new ParticleMophingMaterial();
+
+    this.root = this.models.scene;
+    this.rotYSpeed = Math.PI * 0.25;
   }
 
   setParticlesPositions() {
@@ -122,6 +125,11 @@ export default class ParticleMorphing {
     this.particles.morph1 = () => this.particles.morph(1);
     this.particles.morph2 = () => this.particles.morph(2);
     this.particles.morph3 = () => this.particles.morph(3);
+  }
+
+  update() {
+    const t = this.experience.time.elapsed; // ms → s
+    this.root.rotation.y = t * this.rotYSpeed;
   }
 
   setScene(object) {

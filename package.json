@@ -20,8 +20,10 @@
   "dependencies": {
     "gsap": "^3.13.0",
     "lil-gui": "^0.19.2",
+    "postprocessing": "^6.38.0",
     "stats.js": "^0.17.0",
     "three": "^0.172.0",
-    "three-custom-shader-material": "^6.3.0"
+    "three-custom-shader-material": "^6.3.0",
+    "three-stdlib": "^2.36.1"
   }
 }

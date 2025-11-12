@@ -21,7 +21,7 @@ export default class Renderer {
     this.instance.toneMapping = THREE.LinearToneMapping;
     this.instance.setSize(this.sizes.width, this.sizes.height);
     this.instance.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.instance.setClearColor("#1c1c1c");
+    this.instance.setClearColor("#26E9F5");
   }
 
   resize() {

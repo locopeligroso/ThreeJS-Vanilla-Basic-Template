@@ -1,15 +1,20 @@
-import { PerspectiveCamera } from "three";
+import { Group, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import Experience from "./Experience";
 
 export default class Camera {
-  constructor() {
+  constructor({ distance = 20 } = {}) {
     this.experience = new Experience();
     this.sizes = this.experience.sizes;
     this.scene = this.experience.scene;
     this.canvas = this.experience.canvas;
+    this.mouse = this.experience.mouse;
+    this.time = this.experience.time;
+
+    this.distance = distance;
 
     this.setInstance();
+
     // this.setOrbitControls();
   }
 
@@ -20,8 +25,10 @@ export default class Camera {
       0.1,
       1000,
     );
-    this.instance.position.set(0, 0, 25);
-    this.scene.add(this.instance);
+    this.instance.position.set(0, 0, 20);
+    this.cntrl = new Group();
+    this.cntrl.add(this.instance);
+    this.scene.add(this.cntrl);
   }
 
   setOrbitControls() {
@@ -42,6 +49,17 @@ export default class Camera {
   }
 
   update() {
-    // this.controls.update();
+    const scrollY = (-this.mouse.scrollY / this.sizes.height) * this.distance;
+
+    const parallaxX = -this.mouse.cursor.x;
+    const parallaxY = -this.mouse.cursor.y;
+
+    this.cntrl.position.y = scrollY;
+    this.instance.position.x +=
+      (parallaxX - this.instance.position.x) * 0.1 * this.time.delta;
+    this.instance.position.y +=
+      (parallaxY - this.instance.position.y) * 0.1 * this.time.delta;
+
+    // Easing
   }
 }
