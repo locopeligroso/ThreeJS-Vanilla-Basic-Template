@@ -9,6 +9,8 @@ export default class Start {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
 
+    this.debug = this.experience.debug;
+
     this.init();
     this.setMaterials();
     this.assignMaterials();
@@ -29,18 +31,23 @@ export default class Start {
   }
 
   setMaterials() {
-    this.backdropMat = new BackdropMaterial();
+    this.backdropMat = new BackdropMaterial({ metalness: 1, roughness: 0.8 });
 
     this.colorMat = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(0x26e9f5),
-      metalness: 0,
-      roughness: 0.61,
-      clearcoat: 0,
-      clearcoatRoughness: 0.7,
+      color: new THREE.Color("#39d4da"),
+      metalness: 0.1,
+      roughness: 0.18,
+      clearcoat: 1,
+      clearcoatRoughness: 0.05,
+      sheen: 0.2,
+      sheenColor: new THREE.Color("#ffffff"),
     });
-    this.metalMat = new THREE.MeshStandardMaterial({
+
+    this.metalMat = new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color("#e0e0e0"),
       metalness: 1,
-      roughness: 0.2,
+      roughness: 0.25,
+      envMapIntensity: 1,
     });
   }
 
@@ -71,8 +78,14 @@ export default class Start {
     if (!ui) return;
 
     const f = ui.addFolder?.("Backdrop Material");
+
+    console.log(this.backdropMat);
+
     f.addColor(this.backdropMat, "color");
+    f.add(this.backdropMat, "metalness", 0, 1, 0.01);
     f.add(this.backdropMat, "roughness", 0, 1, 0.01);
-    f.add(this.backdropMat, "bumpScale", 0, 1, 0.01);
+    f.add(this.backdropMat, "bumpScale", 0, 5, 0.01);
+
+    f.add(this.backdropMat, "wrapRepeat", 0, 10, 0.001).name("Texture repeat");
   }
 }

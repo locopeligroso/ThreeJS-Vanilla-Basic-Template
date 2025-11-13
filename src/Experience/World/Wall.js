@@ -2,15 +2,40 @@ import Experience from "../Experience";
 import * as THREE from "three";
 
 export default class Wall {
-  constructor() {
+  constructor(options = {}) {
+    const {
+      pos = [0, -50, -15],
+      dimensions = [100, 60],
+      color = 0x1c1c1c,
+    } = options;
+
+    this.opts = { pos, dimensions, color };
+
     this.experience = new Experience();
+    this.scene = this.experience.scene;
 
-    this.geometry = new THREE.PlaneGeometry(50, 20);
-    this.material = new THREE.MeshStandardMaterial({ color: "black" });
+    this.init();
+    this.setTransform();
 
+    this.setScene(this.instance);
+  }
+
+  init() {
+    this.geometry = new THREE.PlaneGeometry(
+      this.opts.dimensions[0],
+      this.opts.dimensions[1],
+    );
+    this.material = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(this.opts.color),
+    });
     this.instance = new THREE.Mesh(this.geometry, this.material);
-    this.instance.position.set(0, -40, -10);
+  }
 
-    this.experience.scene.add(this.instance);
+  setTransform() {
+    this.instance.position.set(...this.opts.pos);
+  }
+
+  setScene(object) {
+    this.scene.add(object);
   }
 }

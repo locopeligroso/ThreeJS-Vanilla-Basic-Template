@@ -18,7 +18,7 @@ export default class Environment {
   }
 
   setSunLight() {
-    this.sunLight = new THREE.DirectionalLight("#ffffff", 0.5);
+    this.sunLight = new THREE.DirectionalLight("#ffffff", 0);
     this.sunLight.castShadow = true;
     this.sunLight.shadow.camera.far = 15;
     this.sunLight.shadow.mapSize.set(1024, 1024);
@@ -30,14 +30,32 @@ export default class Environment {
 
   setHdriMap() {
     this.hdriMap = {};
-    this.hdriMap.intensity = 0.5;
-    this.hdriMap.texture = this.resources.items.hdriMap;
-    this.hdriMap.texture.mapping = THREE.EquirectangularReflectionMapping;
+    this.hdriMap.intensity = 0.55;
 
-    this.scene.environment = this.hdriMap.texture;
-    //this.scene.background = this.hdriMap.texture;
+    this.hdriMap.textures = {};
 
-    this.hdriMap.updateMaterials = () => {
+    const tex = this.hdriMap.textures;
+    const maps = this.resources.items;
+
+    tex.bluePhotoStudio = maps.hdriBluePhotoStudio;
+    tex.goldenGateHills = maps.hdriGoldenGateHills;
+    tex.overcastSoilPuresky = maps.hdriOvercastSoilPuresky;
+    tex.provenceStudio = maps.hdriProvenceStudio;
+    tex.qwantaniDuskPuresky = maps.hdriQwantaniDuskPuresky;
+    tex.studioSmall02 = maps.hdriStudioSmall02;
+
+    this.hdriMap.current = "bluePhotoStudio";
+
+    this.hdriMap.apply = (name) => {
+      const texture = this.hdriMap.textures[name];
+      if (!texture) return;
+
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+
+      this.scene.environment = texture;
+      // this.scene.background = texture
+
+      // Aggiorna tutti i materiali
       this.scene.traverse((child) => {
         if (
           child instanceof THREE.Mesh &&
@@ -46,13 +64,14 @@ export default class Environment {
             child.material instanceof CustomShaderMaterial ||
             child.material instanceof THREE.ShaderMaterial)
         ) {
-          child.material.envMap = this.hdriMap.texture;
+          child.material.envMap = texture;
           child.material.envMapIntensity = this.hdriMap.intensity;
           child.material.needsUpdate = true;
         }
       });
     };
-    this.hdriMap.updateMaterials();
+
+    this.hdriMap.apply(this.hdriMap.current);
   }
 
   setDebug() {
@@ -63,6 +82,14 @@ export default class Environment {
 
     ui.add(this.hdriMap, "intensity", 0, 5, 0.01)
       .name("HDRI intensity")
-      .onChange(() => this.hdriMap.updateMaterials());
+      .onChange(() => {
+        this.hdriMap.apply(this.hdriMap.current);
+      });
+
+    ui.add(this.hdriMap, "current", Object.keys(this.hdriMap.textures))
+      .name("HDRI map")
+      .onChange((value) => {
+        this.hdriMap.apply(value);
+      });
   }
 }

@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Carcano 120</title>
     <link rel="stylesheet" href="./style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
+    <canvas class="webgl"></canvas>
     <div class="section" id="0">
       <h1>0</h1>
     </div>
@@ -15,15 +22,38 @@
       <h1>1</h1>
     </div>
 
-    <div class="section" id="2">
-      <h1>2</h1>
+    <div class="section" id="section-2">
+      <div class="section__inner">
+        <h1>2</h1>
+        <button id="open-modal-btn">Apri modale</button>
+      </div>
     </div>
 
     <div class="section" id="3">
       <h1>3</h1>
     </div>
 
-    <canvas class="webgl"></canvas>
+    <div class="section" id="4">
+      <h1>4</h1>
+    </div>
+
+    <!-- 
+
+       <div class="section" id="5">
+      <h1>5</h1>
+    </div> -->
+
+    <div class="modal" id="modal-section-2">
+      <div class="modal__backdrop"></div>
+      <div class="modal__content">
+        <button class="modal__close" data-modal-close>&times;</button>
+        <div class="modal__content-inner">
+          <h2>Sezione 2</h2>
+          <p>Qui puoi mettere il contenuto speciale...</p>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="./script.js"></script>
   </body>
 </html>

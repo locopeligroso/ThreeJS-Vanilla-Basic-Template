@@ -2,51 +2,68 @@ import * as THREE from "three";
 import Experience from "../Experience/Experience";
 
 export default class BackdropMaterial extends THREE.MeshStandardMaterial {
-  constructor({ color, metalness, roughness, bumpScale, wrap } = {}) {
+  constructor(options = {}) {
     super();
+
+    const {
+      color = 0x1c1c1c,
+      metalness = 1,
+      roughness = 1,
+      bumpScale = 0.2,
+      normalScale = 1,
+      wrapRepeat = 6,
+    } = options;
 
     this.experience = new Experience();
     this.resources = this.experience.resources;
-    this.debug = this.experience.debug;
+
+    // valori base del materiale
+    this.color = new THREE.Color(color);
+    this.metalness = metalness;
+    this.roughness = roughness;
+    this.bumpScale = bumpScale;
+    this.normalScale = new THREE.Vector2(normalScale, normalScale);
+
+    this.wrapRepeatValue = wrapRepeat;
 
     this.textures = [];
 
-    this.setValues({ color, metalness, roughness, bumpScale, wrap });
-    this.setTexturesMap();
-    this.setMaterial();
+    this.setTextures();
   }
 
-  setValues({ color, metalness, roughness, bumpScale, wrap } = {}) {
-    this.color = new THREE.Color(color ?? 0x1c1c1c);
-    this.metalness = metalness ?? 1;
-    this.roughness = roughness ?? 1;
-    this.bumpScale = bumpScale ?? 0.2;
-    this.wrap = wrap ?? THREE.RepeatWrapping;
+  get wrapRepeat() {
+    return this.wrapRepeatValue;
   }
 
-  setTexturesMap() {
+  set wrapRepeat(value) {
+    this.wrapRepeatValue = value;
+    this.updateRepeat();
+  }
+
+  setTextures() {
     const items = this.resources.items;
-    console.log(items);
 
-    const keys = [
-      "backdropMap",
-      "backdropRough",
-      "backdropNormal",
-      "backdropBump",
-    ];
+    const rough = items.backdropRough;
+    const normal = items.backdropNormal;
+    const bump = items.backdropBump;
+    const spec = items.backdropSpec;
 
-    keys.forEach((key) => this.textures.push((this[key] = items[key])));
+    this.roughnessMap = rough || null;
+    this.normalMap = normal || null;
+    this.bumpMap = bump || null;
+    this.metalnessMap = spec || null;
+
+    this.textures = [rough, normal, bump, spec].filter(Boolean);
+
+    this.updateRepeat();
   }
 
-  setMaterial() {
-    this.map = this.backdropMap;
-    this.roughnessMap = this.backdropRough;
-    this.normalMap = this.backdropNormal;
-    this.bumpMap = this.backdropBump;
-
+  updateRepeat() {
     this.textures.forEach((tex) => {
-      if (!tex) return;
-      tex.wrapS = tex.wrapT = this.wrap;
+      tex.wrapS = THREE.MirroredRepeatWrapping;
+      tex.wrapT = THREE.MirroredRepeatWrapping;
+      tex.offset.set(0, 0);
+      tex.repeat.set(this.wrapRepeatValue, this.wrapRepeatValue);
       tex.needsUpdate = true;
     });
   }

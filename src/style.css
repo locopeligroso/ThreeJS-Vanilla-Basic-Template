@@ -1,6 +1,9 @@
+/* RESET DI BASE ---------------------------------------------------------- */
+
 * {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 html,
@@ -9,29 +12,111 @@ body {
   height: 100%;
 }
 
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+}
+
+/* TIPOGRAFIA ------------------------------------------------------------- */
+
+body {
+  font-family:
+    "Open Sans",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* CANVAS THREE.JS (BACKGROUND) ------------------------------------------- */
+
 .webgl {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
+  z-index: 0;
   outline: none;
+  pointer-events: none;
 }
+
+/* SEZIONI SCROLLABILI ---------------------------------------------------- */
+
+h1 {
+  font-size: 2vw;
+  color: white;
+}
+
+/* SEZIONI ------------------------------------------------------- */
 
 .section {
   width: 100%;
   height: 100%;
   position: relative;
-  z-index: 9999;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  transition: transform 0.6s ease;
+}
+
+/* quando la modale è aperta, sposta solo la sezione 2 */
+body.modal-open #section-2 {
+  transform: translateX(-100vw);
+}
+
+/* MODALE */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transform: translateX(100vw);
+  opacity: 0;
   pointer-events: none;
+  transition:
+    transform 0.6s ease,
+    opacity 0.6s ease;
 }
 
-.section h1 {
+.modal.is-visible {
+  transform: translateX(0);
+  opacity: 0.3;
+  pointer-events: auto;
+}
+
+.modal__backdrop {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate3d(-50%, -50%, 0);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
 }
 
-h1 {
-  font-size: 2vw;
-  color: white;
+.modal__content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  color: #fff;
+  padding: 2rem;
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+}
+
+.modal__content-inner {
+  max-width: 600px;
+  width: 100%;
+}
+
+.modal__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
 }

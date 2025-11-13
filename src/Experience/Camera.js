@@ -1,5 +1,6 @@
 import { Group, PerspectiveCamera } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import gsap from "gsap";
 import Experience from "./Experience";
 
 export default class Camera {
@@ -34,13 +35,18 @@ export default class Camera {
   setOrbitControls() {
     this.controls = new OrbitControls(this.instance, this.canvas);
     this.controls.enableDamping = true;
-
-    // Limiti Zoom
-    // this.controls.minDistance = 2; // Minimo zoom
-    // this.controls.maxDistance = 10; // Massimo zoom
-
     this.controls.target.set(0, 0, 0);
-    this.controls.update();
+  }
+
+  // 👇 chiamato dallo script della modale
+  setModalOpen(isOpen) {
+    const targetX = isOpen ? 10 : 0; // quanto spostare la camera a sinistra
+
+    gsap.to(this.cntrl.position, {
+      x: targetX,
+      duration: 1,
+      ease: "expo.out",
+    });
   }
 
   resize() {
@@ -49,20 +55,21 @@ export default class Camera {
   }
 
   update() {
-    // per forza, altrimenti la camea si istanzai solo allo scroll
+    // scroll verticale
     if (this.mouse.scrollY) {
       const scrollY = (-this.mouse.scrollY / this.sizes.height) * this.distance;
       this.cntrl.position.y = scrollY;
     }
 
-    const parallaxX = -this.mouse.cursor.x;
-    const parallaxY = -this.mouse.cursor.y;
+    // parallax
+    if (this.mouse.cursor) {
+      const parallaxX = -this.mouse.cursor.x;
+      const parallaxY = -this.mouse.cursor.y;
 
-    this.instance.position.x +=
-      (parallaxX - this.instance.position.x) * 0.1 * this.time.delta;
-    this.instance.position.y +=
-      (parallaxY - this.instance.position.y) * 0.1 * this.time.delta;
-
-    // Easing
+      this.instance.position.x +=
+        (parallaxX - this.instance.position.x) * 0.1 * this.time.delta;
+      this.instance.position.y +=
+        (parallaxY - this.instance.position.y) * 0.1 * this.time.delta;
+    }
   }
 }

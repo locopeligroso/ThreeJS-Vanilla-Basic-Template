@@ -5,12 +5,18 @@ import WobbleMaterial from "../../Materials/WobbleMaterial";
 
 export default class Wobble {
   constructor(options = {}) {
-    const { size, pos = [0, 0, 0], rotationSpeed = Math.PI * 0.1 } = options;
+    const {
+      size,
+      pos = [0, 0, 0],
+      rotationSpeed = Math.PI * 0.1,
+      name = "test",
+    } = options;
 
     this.opts = {
       size,
       pos,
       rotationSpeed,
+      name,
     };
 
     this.experience = new Experience();
@@ -21,7 +27,7 @@ export default class Wobble {
     this.init();
     this.initMaterial();
     this.scene.add(this.model);
-    this.setDebug?.();
+    this.setDebug();
   }
 
   init() {
@@ -57,7 +63,7 @@ export default class Wobble {
     const uniforms = this.model?.material?.uniforms;
     if (!uniforms) return;
 
-    const f = ui.addFolder?.("Wobble");
+    const f = ui.addFolder?.("wobble " + this.opts.name);
 
     f.add(uniforms.uPositionFrequency, "value", 0, 2, 0.001).name(
       "uPositionFrequency",
@@ -86,5 +92,7 @@ export default class Wobble {
       .onChange((v) => uniforms.uColorB.value.set(v));
 
     f.add(this.model.material, "metalness", 0, 1, 0.001).name("metalness");
+
+    f.close();
   }
 }

@@ -12,6 +12,8 @@ export default class World {
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
 
+    console.log(this.resources.items);
+
     this.resources.on("ready", () => {
       this.init();
 
@@ -50,7 +52,6 @@ export default class World {
   }
 
   init() {
-    this.particleMorphingModel = this.resources.items.particleMorphing;
     this.gpgpuModel = this.resources.items.gancioGpgpu;
     this.gpgpuBackgroundModel = this.resources.items.background;
     this.gpgpuCatena = this.resources.items.catena;
