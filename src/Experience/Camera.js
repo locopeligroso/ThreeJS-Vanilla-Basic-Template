@@ -49,12 +49,15 @@ export default class Camera {
   }
 
   update() {
-    const scrollY = (-this.mouse.scrollY / this.sizes.height) * this.distance;
+    // per forza, altrimenti la camea si istanzai solo allo scroll
+    if (this.mouse.scrollY) {
+      const scrollY = (-this.mouse.scrollY / this.sizes.height) * this.distance;
+      this.cntrl.position.y = scrollY;
+    }
 
     const parallaxX = -this.mouse.cursor.x;
     const parallaxY = -this.mouse.cursor.y;
 
-    this.cntrl.position.y = scrollY;
     this.instance.position.x +=
       (parallaxX - this.instance.position.x) * 0.1 * this.time.delta;
     this.instance.position.y +=

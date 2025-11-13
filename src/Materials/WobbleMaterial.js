@@ -5,14 +5,14 @@ import vertexShader from "./shaders/wobble/vertex.glsl";
 import fragmentShader from "./shaders/wobble/fragment.glsl";
 
 export default class WobbleMaterial {
-  constructor({ colorA = "#ffffff", colorB = "#bababa" } = {}) {
+  constructor({ colorA = "#26e9f5", colorB = "#145490" } = {}) {
     this.experience = new Experience();
     this.time = this.experience.time;
     this.debug = this.experience.debug;
 
     this.setUniforms(colorA, colorB);
     this.setMaterial();
-    this.setDebug();
+    // this.setDebug();
   }
 
   setUniforms(colorA, colorB) {

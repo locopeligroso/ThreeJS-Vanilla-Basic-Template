@@ -9,13 +9,14 @@ export default class GPGPUElement {
   constructor(options = {}) {
     const {
       model,
-      pos = [0, -40, 10],
+      pos = [0, 0, 10],
       rot = [0, 0, 0],
       uSize = 0.075,
       uOpacity = 1,
       uFlowFieldInfluence = 0.5,
       uFlowFieldStrenght = 2,
       uFlowFieldFrequency = 0.5,
+      timeScale = 5,
       name = "gpgpu element",
     } = options;
 
@@ -27,6 +28,7 @@ export default class GPGPUElement {
       uFlowFieldInfluence,
       uFlowFieldStrenght,
       uFlowFieldFrequency,
+      timeScale,
       name,
     };
 
@@ -39,10 +41,7 @@ export default class GPGPUElement {
     this.init(model);
     this.setParticles();
     this.setGPGPU();
-
-    // this.test();
     this.setDebug();
-
     this.setScene(this.particles.points);
   }
 
@@ -58,7 +57,6 @@ export default class GPGPUElement {
     const originalGeometry = this.model.scene.children[0].geometry;
     this.baseGeometry = {};
     this.baseGeometry.instance = originalGeometry.clone();
-
     this.baseGeometry.count =
       this.baseGeometry.instance.attributes.position.count;
 
@@ -75,12 +73,15 @@ export default class GPGPUElement {
     this.baseParticlesTexture = this.gpgpu.computation.createTexture();
   }
 
-  applyGeomTransform({ pos = [0, -40, 10], rot = [0, 0, 0] } = {}) {
+  applyGeomTransform() {
+    const { pos, rot = [0, 0, 0] } = this.opts;
+
     const m = new THREE.Matrix4().compose(
       new THREE.Vector3(...pos),
       new THREE.Quaternion().setFromEuler(new THREE.Euler(...rot)),
       new THREE.Vector3(1, 1, 1),
     );
+
     this.baseGeometry.instance.applyMatrix4(m);
     this.baseGeometry.instance.attributes.position.needsUpdate = true;
     this.baseGeometry.instance.computeBoundingSphere();
@@ -202,8 +203,8 @@ export default class GPGPUElement {
 
   update() {
     const uniforms = this.gpgpu.particlesVariable.material.uniforms;
-    uniforms.uTime.value = this.time.elapsed / 500;
-    uniforms.uDeltaTime.value = this.time.delta / 500;
+    uniforms.uTime.value = this.time.elapsed / (this.opts.timeScale * 100);
+    uniforms.uDeltaTime.value = this.time.delta / (this.opts.timeScale * 100);
 
     this.gpgpu.computation.compute();
 
@@ -260,6 +261,8 @@ export default class GPGPUElement {
     folder
       .add(this.particles.material.uniforms.uOpacity, "value", 0.01, 1, 0.001)
       .name("uOpacity");
+
+    folder.add(this.opts, "timeScale", 1, 10, 0.1).name("time Scale");
 
     f.close();
 
