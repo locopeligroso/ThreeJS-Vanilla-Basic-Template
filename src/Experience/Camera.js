@@ -38,15 +38,18 @@ export default class Camera {
     this.controls.target.set(0, 0, 0);
   }
 
-  // 👇 chiamato dallo script della modale
   setModalOpen(isOpen) {
-    const targetX = isOpen ? 10 : 0; // quanto spostare la camera a sinistra
+    const targetX = isOpen ? 7.5 : 0;
+    const targetZ = isOpen ? -10 : 0;
 
     gsap.to(this.cntrl.position, {
       x: targetX,
-      duration: 1,
+      z: targetZ,
+      duration: 1.5,
       ease: "expo.out",
     });
+
+    console.log("camera, isOpen = " + isOpen);
   }
 
   resize() {
@@ -55,7 +58,6 @@ export default class Camera {
   }
 
   update() {
-    // scroll verticale
     if (this.mouse.scrollY) {
       const scrollY = (-this.mouse.scrollY / this.sizes.height) * this.distance;
       this.cntrl.position.y = scrollY;

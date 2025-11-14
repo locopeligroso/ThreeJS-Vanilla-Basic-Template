@@ -19,9 +19,11 @@ requestAnimationFrame(animate);
 const experience = new Experience(document.querySelector("canvas.webgl"));
 const camera = experience.camera;
 
-const modal = document.getElementById("modal-section-2");
+/* const modal = document.getElementById("modal-section-2");
 const openBtn = document.getElementById("open-modal-btn");
 const closeBtn = modal.querySelector("[data-modal-close]");
+
+let scrollY = 0;
 
 function openModal() {
   const scrollY = window.scrollY;
@@ -37,7 +39,6 @@ function closeModal() {
   camera.setModalOpen(false);
 
   document.body.style.top = "";
-  window.scrollTo(0, scrollY);
 }
 
 openBtn.addEventListener("click", openModal);
@@ -47,4 +48,4 @@ modal.addEventListener("click", (e) => {
   if (e.target.classList.contains("modal__backdrop")) {
     closeModal();
   }
-}); // 👈 ti mancava questa parentesi + punto e virgola
+}); */

@@ -10,6 +10,7 @@ import World from "./World/World";
 import Resources from "./Utils/Resources";
 import Debug from "./Utils/Debug.js";
 import Mouse from "./Utils/Mouse.js";
+import ModalsHandler from "./Utils/ModalsHandler.js";
 
 let instance = null;
 
@@ -34,6 +35,7 @@ export default class Experience {
     this.camera = new Camera();
     this.renderer = new Renderer();
     this.world = new World();
+    this.modalsHandler = new ModalsHandler();
     this.debug = new Debug();
 
     // Sizes Resize Event
