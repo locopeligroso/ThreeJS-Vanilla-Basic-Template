@@ -5,12 +5,15 @@ import GPGPUElement from "./GPGPUElement";
 import ParticleMorphing from "./Particle-Morphing/ParticleMorphing";
 import Start from "./Start";
 import Wall from "./Wall";
+import BackgroundParticles from "./BackgroundParticles";
 
 export default class World {
   constructor() {
     this.experience = new Experience();
     this.scene = this.experience.scene;
     this.resources = this.experience.resources;
+
+    this.particles = new BackgroundParticles();
 
     console.log(this.resources.items);
 
@@ -19,51 +22,55 @@ export default class World {
 
       this.environment = new Environment();
 
-      this.test(6, 60);
+      //this.test(6, 20);
 
       // INTRO
-      /* this.start = new Start();
-       */
+      //this.start = new Start();
 
       // WOBBLE
-      this.wobble = new Wobble({ size: 5, pos: [0, -40, 0] });
+      this.wobble = new Wobble({ size: 5, pos: [0, -20, 0] });
 
       // GANCIO
-      /* this.gancio = new GPGPUElement({
+      this.gancio = new GPGPUElement({
         model: this.gpgpuModel,
         uSize: 0.05,
-        pos: [0, -60, 10],
+        pos: [0, -40, 0],
         name: "gancio",
       });
       this.gancioBG = new GPGPUElement({
         model: this.gpgpuBackgroundModel,
         uSize: 0.025,
-        pos: [0, -60, 10],
+        pos: [0, -40, 0],
         name: "sfondo",
       });
 
-      this.wall = new Wall(); */
+      // this.particleMorphing = new ParticleMorphing();
+
+      this.wall = new Wall({ pos: [0, -40, -10] });
 
       // GANCIO
-      /* this.gancio2 = new GPGPUElement({
+      /*      this.catena = new GPGPUElement({
         model: this.gpgpuCatena,
         uSize: 0.0125,
         name: "catena",
-        pos: [0, -30, 0],
+        pos: [0, -20, 0],
       }); */
     });
   }
 
   init() {
-    /* this.gpgpuModel = this.resources.items.gancioGpgpu;
+    this.gpgpuModel = this.resources.items.gancioGpgpu;
     this.gpgpuBackgroundModel = this.resources.items.background;
-    this.gpgpuCatena = this.resources.items.catena; */
+    this.gpgpuCatena = this.resources.items.catena;
   }
   update() {
     if (this.wobble) this.wobble.update();
+
     if (this.gancio) this.gancio.update();
-    if (this.gancio2) this.gancio2.update();
     if (this.gancioBG) this.gancioBG.update();
+
+    if (this.catena) this.catena.update();
+
     if (this.particleMoprhing) this.particleMoprhing.update();
   }
 

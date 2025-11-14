@@ -21,8 +21,6 @@ export default class Mouse extends EventEmitter {
   setResize() {}
 
   setScroll() {
-    this.scrollY = 0;
-
     this.on("scroll", () => {
       this.scrollY = window.scrollY;
 

@@ -46,7 +46,7 @@ export default [
 
   //GPGPU
 
-  /* {
+  {
     name: "gancioGpgpu",
     type: "gltfModel",
     path: "models/Gancio1.glb",
@@ -62,7 +62,7 @@ export default [
     name: "catena",
     type: "gltfModel",
     path: "models/catena.glb",
-  }, */
+  },
 
   // MORPHING
 
